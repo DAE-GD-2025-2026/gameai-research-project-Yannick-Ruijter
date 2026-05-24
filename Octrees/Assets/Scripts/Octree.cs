@@ -13,7 +13,7 @@ public class Octree {
   }
 
   private void CreateTree(List<GameObject> objects, float minNodeSize) {
-    Root = new(Bounds, minNodeSize);
+    Root = new OctreeNode(Bounds, minNodeSize);
     foreach (var obj in objects) {
       Root.Divide(obj);
     }

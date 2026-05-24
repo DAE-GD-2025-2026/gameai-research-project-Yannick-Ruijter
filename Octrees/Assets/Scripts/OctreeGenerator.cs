@@ -17,7 +17,6 @@ public class OctreeGenerator : MonoBehaviour {
       return;
 
     Gizmos.color = Color.green;
-    Gizmos.DrawWireCube(_octree.Bounds.center, _octree.Bounds.size);
 
     _octree.Root.DrawNode();
   }

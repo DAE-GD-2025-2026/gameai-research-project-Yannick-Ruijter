@@ -44,7 +44,6 @@ public class OctreeNode {
   public void Divide(OctreeObject octObj) {
     if (Bounds.size.x <= _minNodeSize) {
       AddObject(octObj);
-      children = null;
       return;
     }
 
@@ -52,9 +51,9 @@ public class OctreeNode {
 
     bool intersectedChild = false;
     for (int i = 0; i < 8; i++) {
-      children[i] ??= new(_childBounds[i], _minNodeSize);
 
-      if (octObj.Intersects(children[i].Bounds)) {
+      children[i] ??= new OctreeNode(_childBounds[i], _minNodeSize);
+      if (octObj.Intersects(_childBounds[i])) {
         children[i].Divide(octObj);
         intersectedChild = true;
       }
@@ -62,26 +61,23 @@ public class OctreeNode {
 
     if (!intersectedChild) {
       AddObject(octObj);
-      children = null;
     }
   }
 
   void AddObject(OctreeObject octObj) => Objects.Add(octObj);
   public void DrawNode() {
-    Gizmos.color = Color.green;
-
-    foreach (var bounds in _childBounds) {
-      // slightly smaller than actual size to make things clear
+    if (Objects.Count > 0) {
+      Gizmos.color = Color.red;
+      Gizmos.DrawCube(Bounds.center, Bounds.size);
+    } else {
       Gizmos.color = Color.green;
-      if (Objects.Count > 0) {
-        Gizmos.color = Color.red;
-      }
+      Gizmos.DrawWireCube(Bounds.center, Bounds.size);
+    }
 
-      Gizmos.DrawWireCube(bounds.center, bounds.size);
-      if (children != null) {
-        foreach (var child in children) {
-          child.DrawNode();
-        }
+    if (children != null) {
+      foreach (var child in children) {
+        if (child != null)
+          child.DrawNode(); // null guard needed
       }
     }
   }
