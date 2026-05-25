@@ -20,7 +20,7 @@ As you can see in this example, each node has exactly 4 children or none at all 
 Now to finally get to the octree! The octree is in definition as easy as a quadtree. It's a tree structure where every node has either no or exactly 8 children.
 This is how it looks like
 
-<img width="600" alt="octree-3640438028" src="https://github.com/user-attachments/assets/a19799c4-aba0-4205-a289-5b9ec5a7f79e" />
+<img width="600" alt="octree-3640438028" style="background-color: white;" src="https://github.com/user-attachments/assets/a19799c4-aba0-4205-a289-5b9ec5a7f79e" />
 
 There you go! All theory done!
 
