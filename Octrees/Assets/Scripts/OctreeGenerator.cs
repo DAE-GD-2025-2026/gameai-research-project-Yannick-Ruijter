@@ -13,7 +13,7 @@ public class OctreeGenerator : MonoBehaviour
     private Octree _octree;
 
     public readonly Graph waypoints = new();
-    void Start() { _octree = new Octree(_objectsInOctree, _minNodeSize, waypoints); }
+    void Awake() { _octree = new Octree(_objectsInOctree, _minNodeSize, waypoints); }
 
     private void OnDrawGizmos() 
     {
@@ -23,6 +23,6 @@ public class OctreeGenerator : MonoBehaviour
         Gizmos.color = Color.green;
 
         _octree.Root.DrawNode();
-        _octree.graph.DrawGraph();
+        //_octree.graph.DrawGraph();
     }
 }

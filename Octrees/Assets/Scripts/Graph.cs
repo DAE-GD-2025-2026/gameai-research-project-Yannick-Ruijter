@@ -75,7 +75,13 @@ namespace Octrees
 
         public bool AStar(OctreeNode startNode, OctreeNode endNode)
         {
-            int maxIterations = 1000000;
+            if (startNode == null || endNode == null)
+            {
+                Debug.LogError("Start or end node not be null");
+                return false;
+            }
+
+            int maxIterations = 10000;
             pathList.Clear();
             Node start = FindNode(startNode);
             Node end = FindNode(endNode);
@@ -108,7 +114,7 @@ namespace Octrees
                 Node current = openSet.First();
                 openSet.Remove(current);
 
-                if(current.Equals(endNode))
+                if(current.Equals(end))
                 {
                     ReconstructPath(current);
                     return true;
@@ -151,6 +157,8 @@ namespace Octrees
                 pathList.Add(current);
                 current = current.from;
             }
+
+            pathList.Reverse();
         }
 
         private float Heuristic(Node start, Node end) => (start.octreeNode.Bounds.center - end.octreeNode.Bounds.center).sqrMagnitude;
