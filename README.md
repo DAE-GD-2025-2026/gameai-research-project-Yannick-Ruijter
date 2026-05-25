@@ -5,7 +5,7 @@ I'm Yannick, a student at Howest following Game Development. For one of the assi
 The topic I've chosen is **3D Navigation Space Generation Using Octrees**. This repo is entirely dedicated to the research of this topic.
 
 ## What are Octrees
-To make it easier to understand octrees, I'll first explain the origin. Tree structures! Now if you have never heard of a tree structure before, this is what it looks like.
+To make it easier to understand octrees, I'll first explain the origin. Tree structures! If you've never seen a tree structure before, this is what it looks like.
 
 <img width="300" alt="image" src="https://github.com/user-attachments/assets/338c1538-2858-49bf-939e-9b33e1fc0343" />
 
