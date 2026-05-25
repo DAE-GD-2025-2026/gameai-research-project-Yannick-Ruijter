@@ -3,21 +3,26 @@ using Octrees;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OctreeGenerator : MonoBehaviour {
-  [SerializeField]
-  private List<GameObject> _objectsInOctree;
-  [SerializeField]
-  private float _minNodeSize = 1f;
+public class OctreeGenerator : MonoBehaviour 
+{
+    [SerializeField]
+    private List<GameObject> _objectsInOctree;
+    [SerializeField]
+    private float _minNodeSize = 1f;
 
-  private Octree _octree;
-  void Start() { _octree = new Octree(_objectsInOctree, _minNodeSize); }
+    private Octree _octree;
 
-  private void OnDrawGizmos() {
-    if (!Application.isPlaying)
-      return;
+    public readonly Graph waypoints = new();
+    void Start() { _octree = new Octree(_objectsInOctree, _minNodeSize, waypoints); }
 
-    Gizmos.color = Color.green;
+    private void OnDrawGizmos() 
+    {
+        if (!Application.isPlaying)
+            return;
 
-    _octree.Root.DrawNode();
-  }
+        Gizmos.color = Color.green;
+
+        _octree.Root.DrawNode();
+        _octree.graph.DrawGraph();
+    }
 }

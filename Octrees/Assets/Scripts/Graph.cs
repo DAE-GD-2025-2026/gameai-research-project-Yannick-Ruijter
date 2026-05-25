@@ -1,0 +1,220 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Xml.Linq;
+using UnityEngine;
+
+namespace Octrees
+{
+  public
+    class Node
+    {
+        static int nextId;
+        public readonly int id;
+
+        public float f, g, h;
+        public Node from;
+
+        public List<Edge> edges = new();
+        public OctreeNode octreeNode;
+
+        public Node(OctreeNode octreeNode)
+        {
+            this.id = nextId++;
+            this.octreeNode = octreeNode;
+        }
+
+        public override bool Equals(object obj) => obj is Node other && id == other.id;
+        public override int GetHashCode() => id.GetHashCode();
+    } 
+    public class Edge
+    {
+      public
+        readonly Node a;
+      public
+        readonly Node b;
+
+      public
+        Edge(Node a, Node b)
+        {
+            this.a = a;
+            this.b = b;
+        }
+
+      public
+        override bool Equals(object obj)
+        {
+            return obj is Edge other && ((a == other.a && b == other.b) || (a == other.b && b == other.a));
+        }
+
+      public
+        override int GetHashCode() => a.GetHashCode() ^ b.GetHashCode();
+    } 
+    public class Graph
+    {
+        public readonly Dictionary<OctreeNode, Node> nodes = new();
+        public readonly HashSet<Edge> edges = new();
+
+        List<Node> pathList = new();
+
+        public int GetPathLength() => pathList.Count;
+
+        public OctreeNode GetPathNode(int index)
+        {
+            if (pathList == null) return null;
+
+            if(index < 0 || index >= pathList.Count)
+            {
+                Debug.LogError($"Index out of bounds. Path length: {pathList.Count}, Index: {index}");
+                return null;
+            }
+
+            return pathList[index].octreeNode;
+        }
+
+        public bool AStar(OctreeNode startNode, OctreeNode endNode)
+        {
+            int maxIterations = 1000000;
+            pathList.Clear();
+            Node start = FindNode(startNode);
+            Node end = FindNode(endNode);
+
+            if (start == null || end == null)
+            {
+                Debug.LogError("Start or end node not found in graph");
+                return false;
+            }
+
+            SortedSet<Node> openSet = new(new NodeComparer());
+
+            HashSet<Node> closedSet = new();
+            int iterationCount = 0;
+
+            start.g = 0;
+            start.h = Heuristic(start, end);
+            start.f = start.g + start.h;
+            start.from = null;
+            openSet.Add(start);
+
+            while (openSet.Count > 0)
+            {
+                if(++iterationCount > maxIterations)
+                {
+                    Debug.LogError("A* exceeded max iteration");
+                    return false;
+                }
+
+                Node current = openSet.First();
+                openSet.Remove(current);
+
+                if(current.Equals(endNode))
+                {
+                    ReconstructPath(current);
+                    return true;
+                }
+
+                closedSet.Add(current);
+
+                //go over all the current node's connections
+                foreach(Edge edge in current.edges)
+                {
+                    //make sure we got the neighboring node and not the current
+                    Node neighbor = Equals(edge.a, current) ? edge.b : edge.a;
+
+                    //we don't want it to already be in the closed set
+                    if (closedSet.Contains(neighbor)) continue;
+
+                    float tentative_gScore = current.g + Heuristic(current, neighbor);
+
+                    //either the neighbor is already in there and we check if the current path is cheaper
+                    //or the neighbore is new
+                    if(tentative_gScore < neighbor.g || !openSet.Contains(neighbor))
+                    {
+                        neighbor.g = tentative_gScore;
+                        neighbor.h = Heuristic(neighbor, end);
+                        neighbor.f = neighbor.g + neighbor.h;
+                        neighbor.from = current;
+                        openSet.Add(neighbor);
+                    }
+                }
+            }
+
+            Debug.Log("No path found");
+            return false;
+        }
+
+        private void ReconstructPath(Node current)
+        {
+            while (current != null)
+            {
+                pathList.Add(current);
+                current = current.from;
+            }
+        }
+
+        private float Heuristic(Node start, Node end) => (start.octreeNode.Bounds.center - end.octreeNode.Bounds.center).sqrMagnitude;
+
+        public class NodeComparer : IComparer<Node>
+        {
+            //makes sure it sorts based on total path cost
+            public int Compare(Node x, Node y)
+            {
+                if (x == null || y == null) return 0;
+
+                int compare = x.f.CompareTo(y.f);
+
+                if(compare == 0)
+                {
+                    return x.id.CompareTo(y.id);
+                }
+
+                return compare;
+            }
+        }
+
+        public void AddNode(OctreeNode octreeNode)
+        {
+            if(!nodes.ContainsKey(octreeNode))
+            {
+                nodes.Add(octreeNode, new Node(octreeNode));
+            }
+        }
+
+        public void AddEdge(OctreeNode a, OctreeNode b)
+        {
+            Node nodeA = FindNode(a);
+            Node nodeB = FindNode(b);
+
+            if (nodeA == null || nodeB == null) return;
+
+            var edge = new Edge(nodeA, nodeB);
+            if(edges.Add(edge))
+            {
+                nodeA.edges.Add(edge);
+                nodeB.edges.Add(edge);
+            }
+        }
+
+        public void DrawGraph()
+        {
+            Gizmos.color = Color.red;
+            foreach (var edge in edges)
+            {
+                Gizmos.DrawLine(edge.a.octreeNode.Bounds.center, edge.b.octreeNode.Bounds.center);
+            }
+            foreach(var node in nodes.Values)
+            {
+                Gizmos.DrawWireSphere(node.octreeNode.Bounds.center, 0.2f);
+            }
+        }
+
+        Node FindNode(OctreeNode octreeNode)
+        {
+            nodes.TryGetValue(octreeNode, out var node);
+            return node;
+        }
+
+        
+    }
+} // namespace Octrees
