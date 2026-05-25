@@ -70,7 +70,9 @@ https://www.mdpi.com/2076-3417/10/21/7636
 
 # General knowledge
 https://www.numberanalytics.com/blog/octrees-ultimate-spatial-data-structure
+
 https://en.wikipedia.org/wiki/Octree
+
 https://en.wikipedia.org/wiki/Quadtree
-https://en.wikipedia.org/wiki/Whitney_covering_lemma
+
 
