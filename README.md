@@ -79,4 +79,4 @@ https://en.wikipedia.org/wiki/Octree
 
 https://en.wikipedia.org/wiki/Quadtree
 
-
+https://kaolin.readthedocs.io/en/latest/notes/spc_summary.html
