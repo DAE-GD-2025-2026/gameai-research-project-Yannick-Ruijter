@@ -28,7 +28,7 @@ There you go! All theory done!
 ## Why would we use them?
 "Why would this ever be useful at all?", you might be wondering. Well octrees are used in quite a few different topics. It's used for accelerating rendering, checking collisions, storing geographical data,... . What I currently will be using it for is spatial partitioning. 
 Once again, I'll start with quadtrees to make it easier to understand. 
-Let's say you're making making some kind of algorithm that simulates a big crowd of people moving in a direction without ever making contact (or just flocking). What would you need for this? Let's start with 1 person, his name will be John. He's in a room with 100 people. You want to know the location of every person within a radius of 1 meter from John. We do this so John knows how to continue moving without hitting someone else.
+Let's say you're making some kind of algorithm that simulates a big crowd of people moving in a direction without ever making contact (or just flocking). What would you need for this? Let's start with 1 person, his name will be John. He's in a room with 100 people. You want to know the location of every person within a radius of 1 meter from John. We do this so John knows how to continue moving without hitting someone else.
 
 <img width="300" alt="image" src="https://github.com/user-attachments/assets/b82b9697-2def-408e-b481-1f7153bca3ed" />
 
