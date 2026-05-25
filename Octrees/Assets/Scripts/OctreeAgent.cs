@@ -35,7 +35,7 @@ namespace Octrees
                 return;
             }
 
-            if(Vector3.Distance(graph.GetPathNode(_currentWaypoint).Bounds.center, transform.position) < _accuracy)
+            if(Vector3.Distance(graph.GetPathNode(_currentWaypoint).bounds.center, transform.position) < _accuracy)
             {
                 _currentWaypoint++;
                 Debug.Log($"Waypoint {_currentWaypoint} reached");
@@ -44,7 +44,7 @@ namespace Octrees
             if(_currentWaypoint <  graph.GetPathLength())
             {
                 _currentNode = graph.GetPathNode(_currentWaypoint);
-                _destination = _currentNode.Bounds.center;
+                _destination = _currentNode.bounds.center;
 
                 var dir = _destination - transform.position;
                 dir.Normalize();
@@ -64,7 +64,7 @@ namespace Octrees
             }
 
             _currentWaypoint = 0;
-            _destination = destNode.Bounds.center;
+            _destination = destNode.bounds.center;
         }
 
         private OctreeNode GetClosestNode(Vector3 position)
@@ -76,7 +76,7 @@ namespace Octrees
             foreach(var nodePair in graph.nodes)
             {
                 var node = nodePair.Key;
-                float distanceSqrd = (node.Bounds.center - position).sqrMagnitude;
+                float distanceSqrd = (node.bounds.center - position).sqrMagnitude;
                 if (distanceSqrd < closestDistanceSqrd) 
                 { 
                     closestNode = node;
@@ -92,19 +92,19 @@ namespace Octrees
             if (graph == null || graph.GetPathLength() == 0) return;
 
             Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(graph.GetPathNode(0).Bounds.center, 0.7f);
+            Gizmos.DrawWireSphere(graph.GetPathNode(0).bounds.center, 0.7f);
 
             Gizmos.color = Color.blue;
-            Gizmos.DrawWireSphere(graph.GetPathNode(graph.GetPathLength() - 1).Bounds.center, 0.5f);
+            Gizmos.DrawWireSphere(graph.GetPathNode(graph.GetPathLength() - 1).bounds.center, 0.5f);
 
             Gizmos.color = Color.green;
             for (int i = 0; i < graph.GetPathLength(); i++)
             {
-                Gizmos.DrawWireSphere(graph.GetPathNode(i).Bounds.center, 0.5f);
+                Gizmos.DrawWireSphere(graph.GetPathNode(i).bounds.center, 0.5f);
                 if(i <  graph.GetPathLength() - 1)
                 {
-                    var start = graph.GetPathNode(i).Bounds.center;
-                    var end = graph.GetPathNode(i + 1).Bounds.center;
+                    var start = graph.GetPathNode(i).bounds.center;
+                    var end = graph.GetPathNode(i + 1).bounds.center;
 
                     Gizmos.DrawLine(start, end);
                 }

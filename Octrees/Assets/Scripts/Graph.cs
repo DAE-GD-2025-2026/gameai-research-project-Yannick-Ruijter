@@ -161,7 +161,7 @@ namespace Octrees
             pathList.Reverse();
         }
 
-        private float Heuristic(Node start, Node end) => (start.octreeNode.Bounds.center - end.octreeNode.Bounds.center).sqrMagnitude;
+        private float Heuristic(Node start, Node end) => (start.octreeNode.bounds.center - end.octreeNode.bounds.center).sqrMagnitude;
 
         public class NodeComparer : IComparer<Node>
         {
@@ -209,11 +209,11 @@ namespace Octrees
             Gizmos.color = Color.red;
             foreach (var edge in edges)
             {
-                Gizmos.DrawLine(edge.a.octreeNode.Bounds.center, edge.b.octreeNode.Bounds.center);
+                Gizmos.DrawLine(edge.a.octreeNode.bounds.center, edge.b.octreeNode.bounds.center);
             }
             foreach(var node in nodes.Values)
             {
-                Gizmos.DrawWireSphere(node.octreeNode.Bounds.center, 0.2f);
+                Gizmos.DrawWireSphere(node.octreeNode.bounds.center, 0.2f);
             }
         }
 

@@ -24,7 +24,7 @@ namespace Octrees {
             {
                 foreach (var otherLeafNode in _emptyLeafNodes)
                 {
-                    if (leafNode != otherLeafNode && leafNode.Bounds.Intersects(otherLeafNode.Bounds))
+                    if (leafNode != otherLeafNode && leafNode.bounds.Intersects(otherLeafNode.bounds))
                         graph.AddEdge(leafNode, otherLeafNode);
                 }
             }
@@ -44,14 +44,6 @@ namespace Octrees {
             {
                 GetEmptyLeaves(child);
             }
-
-            //for (int i = 0; i < node.children.Length; i++)
-            //{
-            //    for (int j = i + 1; j < node.children.Length; j++)
-            //    {
-            //        graph.AddEdge(node.children[i], node.children[j]);
-            //    }
-            //}
         }
 
         private void CreateTree(List<GameObject> objects, float minNodeSize) {

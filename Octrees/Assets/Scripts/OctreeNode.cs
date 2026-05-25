@@ -9,7 +9,7 @@ namespace Octrees {
         static int NextId;
         public readonly int id;
 
-        public Bounds Bounds;
+        public Bounds bounds;
         Bounds[] _childBounds = new Bounds[8];
         public OctreeNode[] children;
         public bool IsLeaf => children == null;
@@ -18,7 +18,7 @@ namespace Octrees {
         public OctreeNode(Bounds bounds, float minNodeSize) {
             id = NextId++;
 
-            Bounds = bounds;
+            this.bounds = bounds;
             _minNodeSize = minNodeSize;
             // its gonna be half size in all direction => total
             // size will be 1/8 (3 dimensions)
@@ -42,7 +42,7 @@ namespace Octrees {
         }
         public void Divide(GameObject obj) => Divide(new OctreeObject(obj));
         public void Divide(OctreeObject octObj) {
-            if (Bounds.size.x <= _minNodeSize) {
+            if (bounds.size.x <= _minNodeSize) {
                 AddObject(octObj);
                 return;
             }
@@ -65,24 +65,16 @@ namespace Octrees {
         }
 
         void AddObject(OctreeObject octObj) => Objects.Add(octObj);
-        public void DrawNode() {
-            if (/*Objects.Count > 0*/ false) 
-            {
-                Gizmos.color = Color.red;
-                Gizmos.DrawCube(Bounds.center, Bounds.size);
-            } 
-            else 
-            {
-                Gizmos.color = Color.green;
-                Gizmos.DrawWireCube(Bounds.center, Bounds.size);
-            }
+        public void DrawNode()
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireCube(bounds.center, bounds.size);
 
-            if (children != null) 
+            if (children != null)
             {
-                foreach (var child in children) 
+                foreach (OctreeNode child in children)
                 {
-                    if (child != null)
-                        child.DrawNode(); // null guard needed
+                    if (child != null) child.DrawNode();
                 }
             }
         }
