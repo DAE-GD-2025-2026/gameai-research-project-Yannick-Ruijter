@@ -84,7 +84,8 @@ crashlytics-build.properties
 *.rsuser
 *.userosscache
 *.sln.docstates
-
+/UserSettings
+/Logs
 # User-specific files (MonoDevelop/Xamarin Studio)
 
 # Mono auto generated files
