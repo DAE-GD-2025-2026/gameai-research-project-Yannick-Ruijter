@@ -32,7 +32,7 @@ Let's say you're making making some kind of algorithm that simulates a big crowd
 
 <img width="300" alt="image" src="https://github.com/user-attachments/assets/b82b9697-2def-408e-b481-1f7153bca3ed" />
 
-John is our red point here and we want to know who currently can be found in John's radius. Right now we would have to check every single person in that room and calculate the distance to John to see if they fall within John's radius. Doing this is stupid! Don't! You might be thinking, "I've done this before with 100 people and it worked perfectly fine". I sincerely hope you were not the one having that thought. First of all, this might work if it's the only thing you do. But imagine that there's an entire game running while you do this. It would calculate and compare 100 different distance each frame while the rest still has to work well on 60fps. Unless you want to make the requirements of the game scare off about half its fanbase, you will probably need to do some optimizations there. Luckily this is where spatial partitioning comes in play. Let's start by dividing our room into a couple of grids.
+John is our red point here and we want to know who currently can be found in John's radius. Right now we would have to check every single person in that room and calculate the distance to John to see if they fall within John's radius. Doing this is stupid! Don't! You might be thinking, "I've done this before with 100 people and it worked perfectly fine". I sincerely hope you were not the one having that thought. First of all, this might work if it's the only thing you do. But imagine that there's an entire game running while you do this. It would calculate and compare 100 different distances each frame while the rest still has to work well on 60fps. Unless you want to make the requirements of the game scare off about half its fanbase, you will probably need to do some optimizations there. Luckily this is where spatial partitioning comes in play. Let's start by dividing our room into a couple of grids.
 
 <img width="300" alt="image" src="https://github.com/user-attachments/assets/f603dac2-9162-4b10-a83b-841f44ec2265" />
 
@@ -50,12 +50,12 @@ Right now, the grids on the right have 1 player per grid. This is what we want! 
 <img width="300" alt="image" src="https://github.com/user-attachments/assets/73b65c3c-2234-44bf-88a2-4b7802e8b58a" />
 
 Now we've succesfully divided our grid into smaller grids only where needed keeping the empty grids to a minimum! This is the base concept of using quadtrees for spatial partitioning. I'm leaving out some details on purpose like the fact that the players won't stay still and we would need some kind of optimized recalculation, but those are topics for another time. 
-To get to the actual topic of this repo, **Octrees**! Now that you now what quadtrees are, it's really easy.
+To get to the actual topic of this repo, **Octrees**! Now that you know what quadtrees are, it's really easy.
 Octrees are just quadtrees but then in 3D!
 
 <img width="300" alt="image" src="https://github.com/user-attachments/assets/6f43ffe9-2126-4a6f-b6b8-eb1a649ad077" />
 
-Instead of checking if there is a player within a square, we check if there's a player within a cube. If there is a playerwithin the cube, we subdivide that cube into 8 equal smaller cubes. It works exactly the same as quadtrees but instead it's 3D version!
+Instead of checking if there is a player within a square, we check if there's a player within a cube. If there is a player within the cube, we subdivide that cube into 8 equal smaller cubes. It works exactly the same as quadtrees but instead it's a 3D version!
 
 
 
