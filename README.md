@@ -51,7 +51,9 @@ Octrees are just quadtrees but then in 3D!
 
 <img width="300" alt="image" src="https://github.com/user-attachments/assets/6f43ffe9-2126-4a6f-b6b8-eb1a649ad077" />
 
-That's about how's they're used.
+Instead of checking if there is a player within a square, we check if there's a player within a cube. If there is a playerwithin the cube, we subdivide that cube into 8 equal smaller cubes. It works exactly the same as quadtrees but instead it's 3D version
+
+
 
 
 ## Sources!
