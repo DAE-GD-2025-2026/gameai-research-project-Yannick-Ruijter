@@ -68,6 +68,10 @@ https://simplealgo.org/
 Image2: 
 https://www.mdpi.com/2076-3417/10/21/7636
 
+Image 3:
+https://kaolin.readthedocs.io/en/latest/notes/spc_summary.html
+
+
 # General knowledge
 https://www.numberanalytics.com/blog/octrees-ultimate-spatial-data-structure
 
