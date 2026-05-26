@@ -9,26 +9,29 @@ namespace Octrees {
         public Bounds Bounds;
         private List<OctreeNode> _emptyLeafNodes = new();
         public Graph graph;
+        private List<OctreeNode> _lastLeafNodesFound = new();
         private float _minNodeSize;
         public Octree(List<GameObject> objects, float minNodeSize, Graph graph) {
             _minNodeSize = minNodeSize;
             this.graph = graph;
             CalculateBounds(objects);
             CreateTree(objects, minNodeSize);
+            _lastLeafNodesFound.Clear();
             GetEmptyLeaves(Root);
-            GetEdges();
+            graph.edges.Clear();
+            GetEdges(_emptyLeafNodes);
             Debug.Log(graph.edges.Count);
         }
 
-        private void GetEdges()
+        private void GetEdges(List<OctreeNode> nodes)
         {
-            graph.edges.Clear();
-            for (int i = 0; i < _emptyLeafNodes.Count; i++)
+            for (int i = 0; i < nodes.Count; i++)
             {
-                for (int j = i + 1; j < _emptyLeafNodes.Count; j++)
+                for (int j = 0; j < _emptyLeafNodes.Count; j++)
                 {
-                    if (_emptyLeafNodes[i].bounds.Intersects(_emptyLeafNodes[j].bounds))
-                        graph.AddEdge(_emptyLeafNodes[i], _emptyLeafNodes[j]);
+                    if (nodes[i] == _emptyLeafNodes[j]) continue;
+                    if (nodes[i].bounds.Intersects(_emptyLeafNodes[j].bounds))
+                        graph.AddEdge(nodes[i], _emptyLeafNodes[j]);
                 }
             }
         }
@@ -38,6 +41,7 @@ namespace Octrees {
             {
                 _emptyLeafNodes.Add(node);
                 graph.AddNode(node);
+                _lastLeafNodesFound.Add(node);
                 return;
             }
 
@@ -45,6 +49,8 @@ namespace Octrees {
 
             foreach (var child in node.children)
             {
+                //probably never happens but once again for my sanity
+                if (child == null) continue;
                 GetEmptyLeaves(child);
             }
         }
@@ -76,6 +82,8 @@ namespace Octrees {
 
             foreach (var node in obj.ParentNodes)
             {
+                graph.RemoveConnectedEdges(node);
+                graph.nodes.Remove(node);
                 node.RemoveObject(obj);
             }
             foreach (var node in obj.ParentNodes)
@@ -83,20 +91,53 @@ namespace Octrees {
                 if(node.ParentNode != null)
                     node.ParentNode.TryCollapse();
             }
-
+            obj.ParentNodes.Clear();
             Root = Root.TryShrinking();
-            graph.nodes.Clear();
-            GetEmptyLeaves(Root);
-            GetEdges();
+            var smallestContainingNode = GetSmallestContainingNode(obj);
+            _lastLeafNodesFound.Clear();
+            GetEmptyLeaves(smallestContainingNode);
+            GetEdges(_lastLeafNodesFound);
         }
 
+        private OctreeNode GetSmallestContainingNode(OctreeObject obj)
+        {
+            var current = Root;
+            var previous = current;
+            while(true)
+            {
+                previous = current;
+                //if there are no children, we are already at the smallest possible node for this region
+                if (current.children == null) break;
+
+                //go over all the children and check which one fully contains the object
+                for(int i = 0; i < 8; i++)
+                {
+                    //normally shjould not happen but for my sanity
+                    if (current.children[i] == null) continue;
+
+                    if (current.children[i].bounds.Contains(obj.bounds.min) && current.children[i].bounds.Contains(obj.bounds.max))
+                    {
+                        current = current.children[i]; 
+                        break;
+                    }
+                }
+
+                //if we have not found a child octant that contains the entire object, we break
+                if(previous == current) break;
+            }
+
+            return current;
+        }
+
+        //not completely optimized, could do better by only recalculating the leafs and edges for the parts that got changed
         public void AddObject(OctreeObject obj)
         {
             var bounds = obj.bounds;
             //check if we need to expand the octree
             if (Root.bounds.Contains(bounds.min) && Root.bounds.Contains(bounds.max))
             {
-                Root.Divide(obj);
+                var smallestContainingNode = GetSmallestContainingNode(obj);
+                smallestContainingNode.Divide(obj);
             }
             else
             {
@@ -136,8 +177,11 @@ namespace Octrees {
             }
 
             graph.nodes.Clear();
+            graph.edges.Clear();
+            _lastLeafNodesFound.Clear();
+            _emptyLeafNodes.Clear();
             GetEmptyLeaves(Root);
-            GetEdges();
+            GetEdges(_emptyLeafNodes);
         }
     }
 }

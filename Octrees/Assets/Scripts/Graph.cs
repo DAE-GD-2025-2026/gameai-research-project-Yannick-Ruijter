@@ -192,6 +192,12 @@ namespace Octrees
             }
         }
 
+        public void RemoveConnectedEdges(OctreeNode node)
+        {
+            if(nodes.ContainsKey(node)) 
+                edges.RemoveWhere(e => e.a == nodes[node] || e.b == nodes[node]);
+        }
+
         public void AddEdge(OctreeNode a, OctreeNode b)
         {
             Node nodeA = FindNode(a);
