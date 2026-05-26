@@ -17,8 +17,12 @@ namespace Octrees {
 
         void Update()
         {
+            if(previousPos != bounds.center)
+            {
 
+            }
         }
+
         public bool Intersects(Bounds other) => bounds.Intersects(other);
     };
 }

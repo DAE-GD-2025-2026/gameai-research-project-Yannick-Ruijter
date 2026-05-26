@@ -21,6 +21,11 @@ public class OctreeGenerator : MonoBehaviour
         _octree.AddObject(obj);
     }
 
+    public void RemoveObject(GameObject obj)
+    {
+        _octree.RemoveObject(obj);
+    }
+
     private void OnDrawGizmos() 
     {
         if (!Application.isPlaying)

@@ -65,6 +65,11 @@ namespace Octrees {
             Bounds.SetMinMax(Bounds.center - size, Bounds.center + size);
         }
         
+        public void RemoveObject(GameObject obj)
+        {
+
+        }
+
         public void AddObject(GameObject obj)
         {
             var bounds = obj.GetComponent<Collider>().bounds;
