@@ -183,6 +183,9 @@ namespace Octrees
 
         public void AddNode(OctreeNode octreeNode)
         {
+            //no empty bounds allowed
+            if (octreeNode.bounds.size == Vector3.zero) return;
+
             if(!nodes.ContainsKey(octreeNode))
             {
                 nodes.Add(octreeNode, new Node(octreeNode));

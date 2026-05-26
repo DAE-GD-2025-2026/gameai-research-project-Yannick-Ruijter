@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using Octrees;
 using System.Collections.Generic;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 public class OctreeGenerator : MonoBehaviour 
@@ -14,6 +15,11 @@ public class OctreeGenerator : MonoBehaviour
 
     public readonly Graph waypoints = new();
     void Awake() { _octree = new Octree(_objectsInOctree, _minNodeSize, waypoints); }
+
+    public void AddGameObject(GameObject obj)
+    {
+        _octree.AddObject(obj);
+    }
 
     private void OnDrawGizmos() 
     {

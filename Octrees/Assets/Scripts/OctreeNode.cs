@@ -15,6 +15,19 @@ namespace Octrees {
         public bool IsLeaf => children == null;
         float _minNodeSize;
 
+        public OctreeNode(OctreeNode[] newChildren, float minNodeSize)
+        {
+            id = NextId++;
+            children = newChildren;
+            this.bounds = new();
+
+            for (int i = 0; i < children.Length; i++)
+            {
+                bounds.Encapsulate(children[i].bounds);
+            }
+
+        }
+
         public OctreeNode(Bounds bounds, float minNodeSize) {
             id = NextId++;
 
@@ -54,8 +67,8 @@ namespace Octrees {
 
                 children[i] ??= new OctreeNode(_childBounds[i], _minNodeSize);
                 if (octObj.Intersects(_childBounds[i])) {
-                children[i].Divide(octObj);
-                intersectedChild = true;
+                    children[i].Divide(octObj);
+                    intersectedChild = true;
                 }
             }
 

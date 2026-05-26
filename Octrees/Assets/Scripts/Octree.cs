@@ -9,7 +9,9 @@ namespace Octrees {
         public Bounds Bounds;
         private List<OctreeNode> _emptyLeafNodes = new();
         public Graph graph;
+        private float _minNodeSize;
         public Octree(List<GameObject> objects, float minNodeSize, Graph graph) {
+            _minNodeSize = minNodeSize;
             this.graph = graph;
             CalculateBounds(objects);
             CreateTree(objects, minNodeSize);
@@ -61,6 +63,50 @@ namespace Octrees {
 
             Vector3 size = Vector3.one * Mathf.Max(Bounds.size.x, Bounds.size.y, Bounds.size.z) * 0.6f;
             Bounds.SetMinMax(Bounds.center - size, Bounds.center + size);
+        }
+
+        public void AddObject(GameObject obj)
+        {
+            var bounds = obj.GetComponent<Collider>().bounds;
+            //check if we need to expand the octree
+            if (Root.bounds.Contains(bounds.min) && Root.bounds.Contains(bounds.max))
+            {
+                Root.Divide(obj);
+            }
+            else
+            {
+                //if at least something is inside the root, we divide
+                if (Root.bounds.Contains(bounds.min) || Root.bounds.Contains(bounds.max))
+                    Root.Divide(obj);
+
+                //we see what part
+                var outOfBoundsPos = Root.bounds.Contains(bounds.min) ? bounds.max : bounds.min;
+                OctreeNode[] newChildren = new OctreeNode[8];
+                newChildren[0] = Root;
+
+                Vector3 offsets = new();
+                offsets.x = outOfBoundsPos.x < Root.bounds.center.x ? -Root.bounds.size.x : Root.bounds.size.x;
+                offsets.y = outOfBoundsPos.y < Root.bounds.center.y ? -Root.bounds.size.y : Root.bounds.size.y;
+                offsets.z = outOfBoundsPos.z < Root.bounds.center.z ? -Root.bounds.size.z : Root.bounds.size.z;
+                for (int i = 1; i < 8; i++)
+                {
+                    Vector3 currentCenter = new();
+                    currentCenter.x = Root.bounds.center.x + ((i & 1) == 0 ? 0 : offsets.x);
+                    currentCenter.y = Root.bounds.center.y + ((i & 2) == 0 ? 0 : offsets.y);
+                    currentCenter.z = Root.bounds.center.z + ((i & 4) == 0 ? 0 : offsets.z);
+
+                    Bounds currentBounds = new(currentCenter, Root.bounds.size);
+                    newChildren[i] = new OctreeNode(currentBounds, _minNodeSize);
+                    //we divide it if needed
+                    if (newChildren[i].bounds.Intersects(bounds))
+                        newChildren[i].Divide(obj); 
+                }
+
+                Root = new OctreeNode(newChildren, _minNodeSize);
+            }
+
+            graph.nodes.Clear();
+            GetEmptyLeaves(Root);
         }
     }
 }
