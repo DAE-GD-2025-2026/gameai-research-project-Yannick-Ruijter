@@ -86,3 +86,5 @@ https://www.researchgate.net/publication/309526457_INDOOR_A_PATHFINDING_THROUGH_
 
 https://www.academia.edu/54040490/OctoMap_An_Efficient_Probabilistic_3D_Mapping_Framework_Based_on_Octrees
 
+https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=821308
+
