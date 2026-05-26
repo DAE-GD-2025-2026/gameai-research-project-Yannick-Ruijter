@@ -429,7 +429,7 @@ public void RemoveObject(OctreeObject obj)
 
 ## Finish
 We have a finished object removal! Good job, you now know the basics of octrees. The topic of dynamic octrees continues to grow. Right now we could optimize our tree by using a combination of loose octrees and temporal coherence, but that's for another time. 
-Thank for reading all the way through :)
+Thank for reading all the way through :)! (also if you decide to do loose octrees, it's not difficult but there's like a total of 4 papers online to read about it so good luck 👍)
 
 
 ## Sources!
