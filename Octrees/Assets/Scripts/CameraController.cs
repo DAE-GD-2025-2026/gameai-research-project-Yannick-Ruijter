@@ -31,6 +31,7 @@ public class CameraController : MonoBehaviour {
         _generator.AddGameObject(_octreeObjectsToAdd.First());
         _objectsToRemove.Add(_octreeObjectsToAdd[0]);
         _octreeObjectsToAdd.RemoveAt(0);
+        _agent.ResetCurrentNode();
         _agent.GetRandomDestination();
     }
 
@@ -40,6 +41,7 @@ public class CameraController : MonoBehaviour {
         _generator.RemoveObject(_objectsToRemove.Last());
         _octreeObjectsToAdd.Insert(0, _objectsToRemove.Last());
         _objectsToRemove.Remove(_objectsToRemove.Last());
+        _agent.ResetCurrentNode();
         _agent.GetRandomDestination();
     }
 }

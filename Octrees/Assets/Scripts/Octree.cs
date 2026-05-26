@@ -68,13 +68,23 @@ namespace Octrees {
         
         public void RemoveObject(OctreeObject obj)
         {
-            if(!Root.ObjectsInChildren.Contains(obj))
+            if(obj.ParentNodes.Count == 0)
             {
-                Debug.LogError("This octreeobject is part of the current octree!");
+                Debug.LogError("This octreeobject is not part of any octants!");
                 return;
             }
-            Root.RemoveObject(obj);
-            Root = Root.TryCollapsing();
+
+            foreach (var node in obj.ParentNodes)
+            {
+                node.RemoveObject(obj);
+            }
+            foreach (var node in obj.ParentNodes)
+            {
+                if(node.ParentNode != null)
+                    node.ParentNode.TryCollapse();
+            }
+
+            Root = Root.TryShrinking();
             graph.nodes.Clear();
             GetEmptyLeaves(Root);
             GetEdges();

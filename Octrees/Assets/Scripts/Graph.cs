@@ -77,7 +77,7 @@ namespace Octrees
         {
             if (startNode == null || endNode == null)
             {
-                Debug.LogError("Start or end node not be null");
+                //Debug.LogError("Start or end node not be null");
                 return false;
             }
 

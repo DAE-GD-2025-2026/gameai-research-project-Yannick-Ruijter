@@ -25,6 +25,11 @@ namespace Octrees
             GetRandomDestination();
         }
 
+        public void ResetCurrentNode()
+        {
+            _currentNode = GetClosestNode(transform.position);
+        }
+
         private void Update()
         {
             if (graph == null) return;

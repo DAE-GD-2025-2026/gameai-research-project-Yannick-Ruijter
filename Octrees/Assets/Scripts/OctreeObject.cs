@@ -1,10 +1,12 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace Octrees {
     public class OctreeObject {
         public Bounds bounds;
         Vector3 previousPos;
+        public List<OctreeNode> ParentNodes = new();
         public OctreeObject(GameObject obj) {
             if (obj == null){
                 bounds = new Bounds();

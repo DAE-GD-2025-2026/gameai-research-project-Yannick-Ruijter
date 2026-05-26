@@ -6,26 +6,15 @@ using UnityEngine;
 namespace Octrees {
     public class OctreeNode {
         public List<OctreeObject> Objects = new();
-        public List<OctreeObject> ObjectsInChildren
-        {
-            get
-            {
-                List<OctreeObject> current = new(Objects);
-                if (children != null)
-                {
-                    for (int i = 0; i < 8; i++)
-                        current.AddRange(children[i].ObjectsInChildren);
-                }
-                return current;
-            }
-        }
-        public bool IsEmpty => ObjectsInChildren.Count == 0;
+        public int TotalObjectCount = 0;
+        public bool IsEmpty => TotalObjectCount == 0;
         static int NextId;
         public readonly int id;
 
         public Bounds bounds;
         Bounds[] _childBounds = new Bounds[8];
         public OctreeNode[] children;
+        public OctreeNode ParentNode;
         public bool IsLeaf => children == null;
         float _minNodeSize;
 
@@ -38,8 +27,30 @@ namespace Octrees {
             for (int i = 0; i < children.Length; i++)
             {
                 bounds.Encapsulate(children[i].bounds);
+                TotalObjectCount += children[i].TotalObjectCount;
             }
 
+        }
+
+        public void RemoveObject(OctreeObject obj)
+        {
+            if(Objects.Contains(obj))
+            {
+                Objects.Remove(obj);
+                DecrementObjectCounter();
+            }
+        }
+
+        public void IncrementObjectCount()
+        {
+            TotalObjectCount++;
+            if(ParentNode != null) ParentNode.IncrementObjectCount();
+        }
+
+        public void DecrementObjectCounter()
+        {
+            TotalObjectCount--;
+            if (ParentNode != null) ParentNode.DecrementObjectCounter();
         }
 
         public OctreeNode(Bounds bounds, float minNodeSize) {
@@ -69,8 +80,11 @@ namespace Octrees {
         }
         public void Divide(GameObject obj) => Divide(new OctreeObject(obj));
         public void Divide(OctreeObject octObj) {
+            //check if we're not making nodes too small
             if (bounds.size.x <= _minNodeSize) {
                 AddObject(octObj);
+                IncrementObjectCount();
+                octObj.ParentNodes.Add(this);
                 return;
             }
 
@@ -80,6 +94,7 @@ namespace Octrees {
             for (int i = 0; i < 8; i++) {
 
                 children[i] ??= new OctreeNode(_childBounds[i], _minNodeSize);
+                children[i].ParentNode = this;
                 if (octObj.Intersects(_childBounds[i])) {
                     children[i].Divide(octObj);
                     intersectedChild = true;
@@ -88,6 +103,8 @@ namespace Octrees {
 
             if (!intersectedChild) {
                 AddObject(octObj);
+                IncrementObjectCount();
+                octObj.ParentNodes.Add(this);
             }
         }
 
@@ -106,36 +123,21 @@ namespace Octrees {
             }
         }
 
-        public void RemoveObject(OctreeObject obj)
+        public void TryCollapse()
         {
-            if(Objects.Contains(obj))
-            {
-                Objects.Remove(obj);
-                Debug.Log("Removed object from octant");
-                return;
-            }
             if (children == null) return;
-            //check how many objects are left in the current octant
-            int numberOfObjectsLeft = 0;
             
-            for (int i = 0; i < 8; i++)
+            for(int i = 0; i < children.Length; i++)
             {
-                //if the current child or one of its children contains the object, remove it
-                if (children[i].ObjectsInChildren.Contains(obj))
-                    children[i].RemoveObject(obj);
-
-                numberOfObjectsLeft += children[i].ObjectsInChildren.Count;
+                if (!children[i].IsEmpty) return;
             }
-
-            //collapsing the current octant of the octree if every child is empty
-            if (numberOfObjectsLeft == 0)
-            {
-                Debug.Log("All octants empty, deleting octants...");
-                children = null; 
-            }
+            children = null;
+            //root node has no parent
+            if(ParentNode != null)
+                ParentNode.TryCollapse();
         }
 
-        public OctreeNode TryCollapsing()
+        public OctreeNode TryShrinking()
         {
             //we can't collapse without any children
             if (children == null) return this;
@@ -156,7 +158,7 @@ namespace Octrees {
                 if (nrNonEmptyChildren > 1) return this;
             }
             //if there's only 1 child non-empty, we see if that child can collapse
-            return children[nonEmptyIndex].TryCollapsing();
+            return children[nonEmptyIndex].TryShrinking();
         }
     };
 }
