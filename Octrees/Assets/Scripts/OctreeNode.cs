@@ -90,21 +90,13 @@ namespace Octrees {
 
             children ??= new OctreeNode[8];
 
-            bool intersectedChild = false;
             for (int i = 0; i < 8; i++) {
 
                 children[i] ??= new OctreeNode(_childBounds[i], _minNodeSize);
                 children[i].ParentNode = this;
                 if (octObj.Intersects(_childBounds[i])) {
                     children[i].Divide(octObj);
-                    intersectedChild = true;
                 }
-            }
-
-            if (!intersectedChild) {
-                AddObject(octObj);
-                IncrementObjectCount();
-                octObj.ParentNodes.Add(this);
             }
         }
 
