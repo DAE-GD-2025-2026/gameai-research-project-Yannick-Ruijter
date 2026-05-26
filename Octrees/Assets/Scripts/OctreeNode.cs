@@ -1,11 +1,25 @@
 using NUnit.Framework;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Octrees {
     public class OctreeNode {
         public List<OctreeObject> Objects = new();
-
+        public List<OctreeObject> ObjectsInChildren
+        {
+            get
+            {
+                List<OctreeObject> current = new(Objects);
+                if (children != null)
+                {
+                    for (int i = 0; i < 8; i++)
+                        current.AddRange(children[i].ObjectsInChildren);
+                }
+                return current;
+            }
+        }
+        public bool IsEmpty => ObjectsInChildren.Count == 0;
         static int NextId;
         public readonly int id;
 
@@ -90,6 +104,59 @@ namespace Octrees {
                     if (child != null) child.DrawNode();
                 }
             }
+        }
+
+        public void RemoveObject(OctreeObject obj)
+        {
+            if(Objects.Contains(obj))
+            {
+                Objects.Remove(obj);
+                Debug.Log("Removed object from octant");
+                return;
+            }
+            if (children == null) return;
+            //check how many objects are left in the current octant
+            int numberOfObjectsLeft = 0;
+            
+            for (int i = 0; i < 8; i++)
+            {
+                //if the current child or one of its children contains the object, remove it
+                if (children[i].ObjectsInChildren.Contains(obj))
+                    children[i].RemoveObject(obj);
+
+                numberOfObjectsLeft += children[i].ObjectsInChildren.Count;
+            }
+
+            //collapsing the current octant of the octree if every child is empty
+            if (numberOfObjectsLeft == 0)
+            {
+                Debug.Log("All octants empty, deleting octants...");
+                children = null; 
+            }
+        }
+
+        public OctreeNode TryCollapsing()
+        {
+            //we can't collapse without any children
+            if (children == null) return this;
+
+            //check how many empty children we have
+            int nrNonEmptyChildren = 0;
+            int nonEmptyIndex = -1;
+            for(int i = 0; i < 8; i++)
+            {
+                //if we find a non empty child
+                if (!children[i].IsEmpty)
+                {
+                    //save its index and increment the counter
+                    nonEmptyIndex = i;
+                    nrNonEmptyChildren++;
+                }
+                //if we have more than 1 non empty child, we can not collapse so we just return the current node (will become new root)
+                if (nrNonEmptyChildren > 1) return this;
+            }
+            //if there's only 1 child non-empty, we see if that child can collapse
+            return children[nonEmptyIndex].TryCollapsing();
         }
     };
 }

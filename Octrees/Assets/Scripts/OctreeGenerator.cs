@@ -16,12 +16,12 @@ public class OctreeGenerator : MonoBehaviour
     public readonly Graph waypoints = new();
     void Awake() { _octree = new Octree(_objectsInOctree, _minNodeSize, waypoints); }
 
-    public void AddGameObject(GameObject obj)
+    public void AddGameObject(OctreeObject obj)
     {
         _octree.AddObject(obj);
     }
 
-    public void RemoveObject(GameObject obj)
+    public void RemoveObject(OctreeObject obj)
     {
         _octree.RemoveObject(obj);
     }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Octrees {
     public class OctreeObject {
-        Bounds bounds;
+        public Bounds bounds;
         Vector3 previousPos;
         public OctreeObject(GameObject obj) {
             if (obj == null){

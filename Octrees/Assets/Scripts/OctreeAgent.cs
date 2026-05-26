@@ -38,7 +38,7 @@ namespace Octrees
             if(Vector3.Distance(graph.GetPathNode(_currentWaypoint).bounds.center, transform.position) < _accuracy)
             {
                 _currentWaypoint++;
-                Debug.Log($"Waypoint {_currentWaypoint} reached");
+                //Debug.Log($"Waypoint {_currentWaypoint} reached");
             }
 
             if(_currentWaypoint <  graph.GetPathLength())
@@ -54,7 +54,7 @@ namespace Octrees
             }
         }
 
-        private void GetRandomDestination()
+        public void GetRandomDestination()
         {
             OctreeNode destNode = null;
 

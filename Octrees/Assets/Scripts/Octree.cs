@@ -22,6 +22,7 @@ namespace Octrees {
 
         private void GetEdges()
         {
+            graph.edges.Clear();
             for (int i = 0; i < _emptyLeafNodes.Count; i++)
             {
                 for (int j = i + 1; j < _emptyLeafNodes.Count; j++)
@@ -65,14 +66,23 @@ namespace Octrees {
             Bounds.SetMinMax(Bounds.center - size, Bounds.center + size);
         }
         
-        public void RemoveObject(GameObject obj)
+        public void RemoveObject(OctreeObject obj)
         {
-
+            if(!Root.ObjectsInChildren.Contains(obj))
+            {
+                Debug.LogError("This octreeobject is part of the current octree!");
+                return;
+            }
+            Root.RemoveObject(obj);
+            Root = Root.TryCollapsing();
+            graph.nodes.Clear();
+            GetEmptyLeaves(Root);
+            GetEdges();
         }
 
-        public void AddObject(GameObject obj)
+        public void AddObject(OctreeObject obj)
         {
-            var bounds = obj.GetComponent<Collider>().bounds;
+            var bounds = obj.bounds;
             //check if we need to expand the octree
             if (Root.bounds.Contains(bounds.min) && Root.bounds.Contains(bounds.max))
             {
