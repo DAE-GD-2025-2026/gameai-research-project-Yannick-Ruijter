@@ -1,9 +1,10 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Octrees {
     public class OctreeObject {
         Bounds bounds;
-
+        Vector3 previousPos;
         public OctreeObject(GameObject obj) {
             if (obj == null){
                 bounds = new Bounds();
@@ -11,8 +12,13 @@ namespace Octrees {
                 return; 
             }
             bounds = obj.GetComponent<Collider>().bounds;
+            previousPos = bounds.center;
         }
 
+        void Update()
+        {
+
+        }
         public bool Intersects(Bounds other) => bounds.Intersects(other);
     };
 }

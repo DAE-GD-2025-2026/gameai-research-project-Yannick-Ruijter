@@ -198,7 +198,6 @@ namespace Octrees
             Node nodeB = FindNode(b);
 
             if (nodeA == null || nodeB == null) return;
-
             var edge = new Edge(nodeA, nodeB);
             if(edges.Add(edge))
             {
