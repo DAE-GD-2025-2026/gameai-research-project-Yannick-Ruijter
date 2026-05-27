@@ -38,7 +38,7 @@ John is our red point here and we want to know who currently can be found in Joh
 <img width="300" alt="image" src="https://github.com/user-attachments/assets/f603dac2-9162-4b10-a83b-841f44ec2265" />
 
 Now some of you might already have noticed something seeing this image, and you're correct. The radius of John only goes into his current grid and the one next to it. This means we only need to take the people who are in neighboring grids into account. This is already a huge optimization! We went from checking every person in the room, to checking only the ones that are in the same or neighboring grids. 
-"I'll just make each grid as small as possible so I have to check even less people!", is what at least someone reading this thought. And you're partially correct! The only issue is that before we start calculating with the people in the neighboring grids, we need to know who the neighboring grids are. If you decide to split up your room into 100 grids, your algorithm will actually be slower than the gridless one. You need to do the neighbor check for 100 grids and then also calculate distances to the people within those neighboring grids. Bad idea! "Well I'll just save each grid's neighbor so I don't have to calculate them every frame.", and this is not a bad idea and for some games will do the job. But right now the problem is that you're using a lot of memory and even still, some grids have no people inside them so it's wasted precision. We want to have a solution where you have as few people per grid but also as few grids as possible. This is where quadtrees come in. Let's start with a simple example!
+"I'll just make each grid as small as possible so I have to check even less people!", is what at least someone reading this thought. And you're partially correct! The only issue is that before we start calculating with the people in the neighboring grids, we need to know who the neighboring grids are. If you decide to split up your room into 100 grids, your algorithm will actually be slower than the gridless one. You need to do the neighbor check for 100 grids and then also calculate distances to the people within those neighboring grids. Bad idea! "Well I'll just save each grid's neighbor so I don't have to calculate them every frame.", and this is not a bad idea and for some games will do the job. But right now the problem is that you're using  of memory and even still, some grids have no people inside them so it's wasted precision. We want to have a solution where you have as few people per grid but also as few grids as possible. This is where quadtrees come in. Let's start with a simple example!
 
 <img width="300" alt="image" src="https://github.com/user-attachments/assets/007b1abe-144a-40a6-a14f-99069fbcd525" />
 
@@ -180,7 +180,7 @@ public void AddObject(OctreeObject obj)
 }
 ````
 
-"I have a fully dynamic octree... YEEAHHH...", will be going through someone's mind right now (and they're wrong). There is currently still a huge problem with this code. What happens if our object is outside of the tree? Some will probably have the reflex to reconstruct the octree completely, and it would work. The issue is that it would be REALLY REALLY slow. We want to be able to add objects with a snap of our fingers whenever we want. If we completely reconstruct if whenever we add an object outside of our bounds, it would slow down every **A LOT**. Luckily there's an easy solution. Instead of recreating the entire thing, we just make the current root a child of a bigger octree we make. Let's first start by checking we need to expand our octree.
+"I have a fully dynamic octree... YEEAHHH...", will be going through someone's mind right now (and they're wrong). There is currently still a huge problem with this code. What happens if our object is outside of the tree? Some will probably have the reflex to reconstruct the octree completely, and it would work. The issue is that it would be REALLY REALLY slow. We want to be able to add objects with a snap of our fingers whenever we want. If we completely reconstruct if whenever we add an object outside of our bounds, it would slow down everything **A LOT**. Luckily there's an easy solution. Instead of recreating the entire thing, we just make the current root a child of a bigger octree we make. Let's first start by checking we need to expand our octree.
 ````c#
 public void AddObject(OctreeObject obj)
 {
@@ -194,7 +194,7 @@ public void AddObject(OctreeObject obj)
 }
 ````
 
-We can than start by expanding our tree if the obj does not fully appear inside of the octree.
+We can then start by expanding our tree if the obj does not fully appear inside of the octree.
 
 ```` c++
 //previous code
@@ -231,7 +231,7 @@ else
     Root = new OctreeNode(newChildren, _minNodeSize);
 }
 ````
-We first calculate in what direction we're supposed to expand and based on that, we calculate our offsets in each dimension. Our current root can be our first child so we only need to create 7 more children. I do some bitwise operations to make sure we create a node in all possible other positions. We now only check if the object intersects with the currently being created note, and if it does, we divide that node. The last thing we do it change the root to be a parent of all the newly created nodes.
+We first calculate in what direction we're supposed to expand and based on that, we calculate our offsets in each dimension. Our current root can be our first child so we only need to create 7 more children. I do some bitwise operations to make sure we create a node in all possible other positions. We now only check if the object intersects with the currently being created note, and if it does, we divide that node. The last thing we do is change the root to be a parent of all the newly created nodes.
 I'm still forgetting 2 things! The first is that we're not handling the scenario where the object is partly inside of our octree. This is a pretty easy (and nasty) fix.
 
 ````c#
@@ -243,7 +243,7 @@ else
 //rest of the original code
 ````
 
-we simply divide our root first and then do the rest of the original calculations. The second edge case we're not handling is when our object is bigger than our current octree. We would not be able to expand in enough directions to cover the entire object. The fix for this is also really easy. We simply put our code from before in a loop
+We simply divide our root first and then do the rest of the original calculations. The second edge case we're not handling is when our object is bigger than our current octree. We would not be able to expand in enough directions to cover the entire object. The fix for this is also really easy. We simply put our code from before in a loop.
 
 ````c#
 while(!(Root.bounds.Contains(bounds.min) && Root.bounds.Contains(bounds.max)))
@@ -277,7 +277,7 @@ while(!(Root.bounds.Contains(bounds.min) && Root.bounds.Contains(bounds.max)))
 }
 ````
 
-we do the expending process for as long as our current octree does not contain the entire object. We now have officially completely implemented adding objects. Congrats!
+We do the expending process for as long as our current octree does not contain the entire object. We now have officially completely implemented adding objects. Congrats!
 
 # Removing objects
 The last part I implemented as part of the dynamic octree is removing objects. This unfortunately comes a couple extra things to think about it.
