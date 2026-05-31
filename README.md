@@ -276,8 +276,8 @@ while(!(Root.bounds.Contains(bounds.min) && Root.bounds.Contains(bounds.max)))
 
 We do the expending process for as long as our current octree does not contain the entire object. We now have officially completely implemented adding objects. Congrats!
 Here's what it looks like.
+<img width="400" height="225" alt="OctreesAdding" src="https://github.com/user-attachments/assets/ed9a94f4-f792-48a6-902f-cc7465b385d1" />
 
-https://github.com/user-attachments/assets/e4c4ca7d-1ab0-4dcf-ba34-8650d2b198ef
 
 
 
