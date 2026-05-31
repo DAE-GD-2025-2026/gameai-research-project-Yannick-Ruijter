@@ -436,6 +436,11 @@ https://github.com/user-attachments/assets/bd33b4e7-e6f7-47cb-8dc2-c0b60c55686d
 
 
 
+
+## Navigation
+The last thing I'll explain is how exactly we can use this to navigate. This part is also covered by the tutorial I mentioned earlier. The pathfinding algorithm used to navigate this octree is A*. I won't explain A* itself but rather how we would use it on our octree. If you don't know how it works, I recommend watching the first 4 minutes of the video marked with A* bellow. Let's start using our A*.
+To use A*, we need 2 pieces of information. First is all the empty leaf nodes. To get this, you can recursively go over all the nodes and add the empty leaves to a list. The second thing we need is all the connections between the nodes. 
+
 ## Finish
 We have a finished object removal! Good job, you now know the basics of octrees. The topic of dynamic octrees continues to grow. Right now we could optimize our tree by using a combination of loose octrees and temporal coherence, but that's for another time. 
 Thank for reading all the way through :)! (also if you decide to do loose octrees, it's not difficult but there's like a total of 4 papers online to read about it so good luck 👍)
@@ -462,12 +467,16 @@ https://en.wikipedia.org/wiki/Quadtree
 
 https://kaolin.readthedocs.io/en/latest/notes/spc_summary.html
 
-# Tutorial
-https://youtu.be/gNmPmWR2vV4
-
 https://www.researchgate.net/publication/309526457_INDOOR_A_PATHFINDING_THROUGH_AN_OCTREE_REPRESENTATION_OF_A_POINT_CLOUD
 
 https://www.academia.edu/54040490/OctoMap_An_Efficient_Probabilistic_3D_Mapping_Framework_Based_on_Octrees
 
 https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=821308
 
+
+# Tutorial
+Octrees:
+https://youtu.be/gNmPmWR2vV4
+
+A*:
+https://youtu.be/i0x5fj4PqP4
