@@ -428,6 +428,13 @@ public void RemoveObject(OctreeObject obj)
     Root = Root.TryShrinking();
 }
 ````
+Here's the result.
+
+
+https://github.com/user-attachments/assets/bd33b4e7-e6f7-47cb-8dc2-c0b60c55686d
+
+
+
 
 ## Finish
 We have a finished object removal! Good job, you now know the basics of octrees. The topic of dynamic octrees continues to grow. Right now we could optimize our tree by using a combination of loose octrees and temporal coherence, but that's for another time. 
