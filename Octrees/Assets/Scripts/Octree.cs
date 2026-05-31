@@ -7,9 +7,9 @@ namespace Octrees {
     public class Octree {
         public OctreeNode Root;
         public Bounds Bounds;
-        private List<OctreeNode> _emptyLeafNodes = new();
+        private HashSet<OctreeNode> _emptyLeafNodes = new();
         public Graph graph;
-        private List<OctreeNode> _lastLeafNodesFound = new();
+        private HashSet<OctreeNode> _lastLeafNodesFound = new();
         private float _minNodeSize;
         public Octree(List<GameObject> objects, float minNodeSize, Graph graph) {
             _minNodeSize = minNodeSize;
@@ -23,15 +23,20 @@ namespace Octrees {
             Debug.Log(graph.edges.Count);
         }
 
-        private void GetEdges(List<OctreeNode> nodes)
+        //could be more efficient i know
+        private void GetEdges(HashSet<OctreeNode> nodes)
         {
-            for (int i = 0; i < nodes.Count; i++)
+            foreach (var node in nodes)
             {
-                for (int j = 0; j < _emptyLeafNodes.Count; j++)
+                foreach (var otherNode in _emptyLeafNodes)
                 {
-                    if (nodes[i] == _emptyLeafNodes[j]) continue;
-                    if (nodes[i].bounds.Intersects(_emptyLeafNodes[j].bounds))
-                        graph.AddEdge(nodes[i], _emptyLeafNodes[j]);
+                    if (node == otherNode) continue;
+
+                    Bounds expanded = node.bounds;
+                    expanded.Expand(0.01f);
+
+                    if (expanded.Intersects(otherNode.bounds))
+                        graph.AddEdge(node, otherNode);
                 }
             }
         }
