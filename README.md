@@ -448,7 +448,8 @@ The image shows the difference between filled and non-filled leaf nodes. To have
 
 The second thing we need is all the connections between the nodes. We can create these after finding all empty leaf nodes. We simply check for each of the empty leaf nodes if they intersect with any of the other leafs nodes. If they do, we create an "edge" that contains both the first and the second node and has a cost which is the distance between them. Here's how the connections would look after tuning down the accuracy a bit and removing some redundant debug drawing.
 
-![Octree edges](image-1.png)
+<img width="744" height="487" alt="image" src="https://github.com/user-attachments/assets/a855bf40-7ea9-4120-b48f-c85aee1c2e83" />
+
 
 I gave you the pieces of the puzzle. The rest is up to you.
 
