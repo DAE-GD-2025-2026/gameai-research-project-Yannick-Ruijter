@@ -35,7 +35,7 @@ John is our red point here and we want to know who currently can be found in Joh
 <img width="300" alt="image" src="https://github.com/user-attachments/assets/f603dac2-9162-4b10-a83b-841f44ec2265" />
 
 Now some of you might already have noticed something seeing this image, and you're correct. The radius of John only goes into his current grid and the one next to it. This means we only need to take the people who are in neighboring grids into account. This is already a huge optimization! We went from checking every person in the room, to checking only the ones that are in the same or neighboring grids. 
-"I'll just make each grid as small as possible so I have to check even less people!", and this idea could work. The only issue is that before we start calculating with the people in the neighboring grids, we need to know who the neighboring grids are. If you decide to split up your room into 100 grids, your algorithm will actually be slower than the gridless one. You need to do the neighbor check for 100 grids and then also calculate distances to the people within those neighboring grids. Bad idea! "Well I'll just save each grid's neighbor so I don't have to calculate them every frame.", and this is not a bad idea and for some games will do the job. But right now the problem is that you're using a lot of memory and even still, some grids have no people inside them so it's wasted precision. We want to have a solution where you have as few people per grid but also as few grids as possible. This is where quadtrees come in. Let's start with a simple example!
+"I'll just make each grid as small as possible so I have to check even less people!", and this idea could work. The only issue is that before we start calculating with the people in the neighboring grids, we need to know who the neighboring grids are. If you decide to split up your room into 100 grids, your algorithm will actually be slower than the gridless one. You need to do the neighbor check for 100 grids and then also calculate distances to the people within those neighboring grids. This will slow your program a lot. "Well I'll just save each grid's neighbor so I don't have to calculate them every frame.", and this is not a bad idea and for some games will do the job. But right now the problem is that you're using a lot of memory and even still, some grids have no people inside them so it's wasted precision. We want to have a solution where you have as few people per grid but also as few grids as possible. This is where quadtrees come in. Let's start with a simple example!
 
 <img width="300" alt="image" src="https://github.com/user-attachments/assets/007b1abe-144a-40a6-a14f-99069fbcd525" />
 
@@ -438,11 +438,22 @@ https://github.com/user-attachments/assets/bd33b4e7-e6f7-47cb-8dc2-c0b60c55686d
 
 
 ## Navigation
-The last thing I'll explain is how exactly we can use this to navigate. This part is also covered by the tutorial I mentioned earlier. The pathfinding algorithm used to navigate this octree is A*. I won't explain A* itself but rather how we would use it on our octree. If you don't know how it works, I recommend watching the first 4 minutes of the video marked with A* bellow. Let's start using our A*.
-To use A*, we need 2 pieces of information. First is all the empty leaf nodes. To get this, you can recursively go over all the nodes and add the empty leaves to a list. The second thing we need is all the connections between the nodes. 
+The last thing I'll explain is how exactly we can use this to navigate. This part is also covered by the tutorial I mentioned earlier. The pathfinding algorithm used to navigate this octree is A*. I won't explain A* itself but rather how we would use it on our octree. If you don't know how it works, I recommend watching the first 4 minutes of the video marked with A* below. Let's start using our A*.
+To use A*, we need 2 pieces of information. 
+First is all the empty leaf nodes. To get this, you can recursively go over all the nodes and add the empty leaves to a list. But why would we need the leaf nodes to begin with? 
+
+![OCTREE IMAGE](image.png)
+
+The image shows the difference between filled and non-filled leaf nodes. To have the most accurate octree, we subdivided parts with objects into smaller parts. This means that the leaf nodes represent the most accurate representation of the environment. If we would start using nodes other than the leaf nodes, we would just be throwing away accuracy that we spent time acquiring. We also don't want our drone to be flying 200 meters around a small flag pole which takes up 2 meters. 
+
+The second thing we need is all the connections between the nodes. We can create these after finding all empty leaf nodes. We simply check for each of the empty leaf nodes if they intersect with any of the other leafs nodes. If they do, we create an "edge" that contains both the first and the second node and has a cost which is the distance between them. Here's how the connections would look after tuning down the accuracy a bit and removing some redundant debug drawing.
+
+![Octree edges](image-1.png)
+
+I gave you the pieces of the puzzle. The rest is up to you.
 
 ## Finish
-We have a finished object removal! Good job, you now know the basics of octrees. The topic of dynamic octrees continues to grow. Right now we could optimize our tree by using a combination of loose octrees and temporal coherence, but that's for another time. 
+We have a finished (slightly) dynamic octrees! Good job, you now know the basics of octrees and navigating throught it. The topic of dynamic octrees continues to grow. We could optimize our tree by using a combination of loose octrees and temporal coherence, but that's for another time. 
 Thank for reading all the way through :)! (also if you decide to do loose octrees, it's not difficult but there's like a total of 4 papers online to read about it so good luck 👍)
 
 

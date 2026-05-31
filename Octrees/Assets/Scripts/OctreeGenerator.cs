@@ -34,6 +34,6 @@ public class OctreeGenerator : MonoBehaviour
         Gizmos.color = Color.green;
 
         _octree.Root.DrawNode();
-        //_octree.graph.DrawGraph();
+        _octree.graph.DrawGraph();
     }
 }

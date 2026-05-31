@@ -103,8 +103,16 @@ namespace Octrees {
         void AddObject(OctreeObject octObj) => Objects.Add(octObj);
         public void DrawNode()
         {
-            Gizmos.color = Color.green;
-            Gizmos.DrawWireCube(bounds.center, bounds.size);
+            if (/*Objects.Count == 0*/true)
+            {
+                Gizmos.color = Color.green;
+                Gizmos.DrawWireCube(bounds.center, bounds.size);
+            }
+            else
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawCube(bounds.center, bounds.size);
+            }
 
             if (children != null)
             {
