@@ -9,22 +9,19 @@ To make it easier to understand octrees, I'll first explain the origin. Tree str
 
 <img width="300" alt="image" src="https://github.com/user-attachments/assets/338c1538-2858-49bf-939e-9b33e1fc0343" />
 
-As you can see, every tree has **ONE** root node. It is the node where the tree starts. Each node inside a tree can also have any amount of children nodes. You can see in the example that Node A, the root node, has 2 children (node B and node C). Node E and node F are in their turn node C's children. Now who is/are node B's children... ? Yes that's correct, it's node D! There are 2 last important things to know about tree structures. A tree structure has leaf nodes. Leaf nodes are nodes that have no children at all. In our example being nodes D, E and F. The last property is that each node has 1 parent node (except for the root node).
+As you can see, every tree has **ONE** root node. It is the node where the tree starts. Each node inside a tree can also have any amount of children nodes. You can see in the example that Node A, the root node, has 2 children (node B and node C). Node E and node F are in their turn node C's children. Now who is/are node B's children... ? If you've answered D, you're correct. There are 2 last important things to know about tree structures. A tree structure has leaf nodes. Leaf nodes are nodes that have no children at all. In our example being nodes D, E and F. The last property is that each node has 1 parent node (except for the root node).
 
 Let's go 1 step closer to octrees. Enter **Quadtrees**!
-Now you can probably already imagine what a quadtree looks if I tell you that it is a tree where each node has exactly 4 or no children, but I'll show you anyways.
+Here's an example
 
 <img width="300" alt="image" src="https://github.com/user-attachments/assets/6393e4b4-8caa-42f7-b8bc-2ff35acacd64" />
 
-As you can see in this example, each node has exactly 4 children or none at all (=> meaning it's a leaf node).
+As you can see in this example, each node has exactly 4 or no children. That special thing about a quadtree. All children in a quadtree have either no or 4 children.
 
-Now to finally get to the octree! The octree is in definition as easy as a quadtree. It's a tree structure where every node has either no or exactly 8 children.
-This is what it looks like
+The octree is in definition as easy as a quadtree. It's a tree structure where every node has either no or exactly 8 children.
+This is what it looks like.
 
 <img width="600" alt="image" src="https://github.com/user-attachments/assets/e33bf40b-75f5-45e3-a38b-0a2405d746dd" />
-
-
-There you go! All theory done!
 
 ## Why would we use them?
 "Why would this ever be useful at all?", you might be wondering. Well octrees are used in quite a few different topics. It's used for accelerating rendering, checking collisions, storing geographical data,... . What I currently will be using it for is spatial partitioning. 
@@ -33,12 +30,12 @@ Let's say you're making some kind of algorithm that simulates a big crowd of peo
 
 <img width="300" alt="image" src="https://github.com/user-attachments/assets/b82b9697-2def-408e-b481-1f7153bca3ed" />
 
-John is our red point here and we want to know who currently can be found in John's radius. Right now we would have to check every single person in that room and calculate the distance to John to see if they fall within John's radius. Doing this is stupid! Don't! You might be thinking, "I've done this before with 100 people and it worked perfectly fine". I sincerely hope you were not the one having that thought. First of all, this might work if it's the only thing you do. But imagine that there's an entire game running while you do this. It would calculate and compare 100 different distances each frame while the rest still has to work well on 60fps. Unless you want to make the requirements of the game scare off about half its fanbase, you will probably need to do some optimizations there. Luckily this is where spatial partitioning comes in play. Let's start by dividing our room into a couple of grids.
+John is our red point here and we want to know who currently can be found in John's radius. Right now we would have to check every single person in that room and calculate the distance to John to see if they fall within John's radius. Doing this is terribly inefficient! You might be thinking, "I've done this before with 100 people and it worked perfectly fine". First of all, this might work if it's the only thing you do. But imagine that there's an entire game running while you do this. It would calculate and compare 100 different distances each frame while the rest still has to work well on 60fps. Unless you want to make the requirements of the game scare off about half its fanbase, you will probably need to do some optimizations there. Luckily this is where spatial partitioning comes in play. Let's start by dividing our room into a couple of grids.
 
 <img width="300" alt="image" src="https://github.com/user-attachments/assets/f603dac2-9162-4b10-a83b-841f44ec2265" />
 
 Now some of you might already have noticed something seeing this image, and you're correct. The radius of John only goes into his current grid and the one next to it. This means we only need to take the people who are in neighboring grids into account. This is already a huge optimization! We went from checking every person in the room, to checking only the ones that are in the same or neighboring grids. 
-"I'll just make each grid as small as possible so I have to check even less people!", is what at least someone reading this thought. And you're partially correct! The only issue is that before we start calculating with the people in the neighboring grids, we need to know who the neighboring grids are. If you decide to split up your room into 100 grids, your algorithm will actually be slower than the gridless one. You need to do the neighbor check for 100 grids and then also calculate distances to the people within those neighboring grids. Bad idea! "Well I'll just save each grid's neighbor so I don't have to calculate them every frame.", and this is not a bad idea and for some games will do the job. But right now the problem is that you're using  of memory and even still, some grids have no people inside them so it's wasted precision. We want to have a solution where you have as few people per grid but also as few grids as possible. This is where quadtrees come in. Let's start with a simple example!
+"I'll just make each grid as small as possible so I have to check even less people!", and this idea could work. The only issue is that before we start calculating with the people in the neighboring grids, we need to know who the neighboring grids are. If you decide to split up your room into 100 grids, your algorithm will actually be slower than the gridless one. You need to do the neighbor check for 100 grids and then also calculate distances to the people within those neighboring grids. Bad idea! "Well I'll just save each grid's neighbor so I don't have to calculate them every frame.", and this is not a bad idea and for some games will do the job. But right now the problem is that you're using a lot of memory and even still, some grids have no people inside them so it's wasted precision. We want to have a solution where you have as few people per grid but also as few grids as possible. This is where quadtrees come in. Let's start with a simple example!
 
 <img width="300" alt="image" src="https://github.com/user-attachments/assets/007b1abe-144a-40a6-a14f-99069fbcd525" />
 
@@ -86,7 +83,7 @@ void CalculateBounds(List<GameObject> objects) {
 We started out by calculating the dimension with the biggest size. We then take that value and apply it on all axis and calculate the min and max value of the bounds using this size. Notice that we do 0.6f instead of 0.5f to give us  a bit more room to play with.
 
 # Subdividing 
-Wow! We're already done with the first part of creating an octree. In general, octrees are not that hard to make. It's more difficult to make them really efficient for dynamic octrees. Let's start with the subdivision. We need 2 pieces of information for the subdivision. We need the objects to include and the min node size. The minimum node size decides the level of details that the octrees will have. Choosing a lower number will end up making smaller nodes, which results in more accurate octrees. The downside is that this is exponentially more expensive to do, both memory and performance wise. For this part, we created an OctreeNode class. The first thing we're going to do is create our root OctreeNode.
+Wow! We're already done with the first part of creating an octree. In general, octrees are not that hard to make. It's a bigger challenge to make them really efficient for dynamic octrees. Let's start with the subdivision. We need 2 pieces of information for the subdivision. We need the objects to include and the min node size. The minimum node size decides the level of details that the octrees will have. Choosing a lower number will end up making smaller nodes, which results in more accurate octrees. The downside is that this is exponentially more expensive to do, both memory and performance wise. For this part, we created an OctreeNode class. The first thing we're going to do is create our root OctreeNode.
 ````c#
 private void CreateTree(List<GameObject> objects, float minNodeSize) {
     Root = new OctreeNode(Bounds, minNodeSize);
@@ -138,7 +135,7 @@ public void AddObject(OctreeObject obj)
 }
 ````
 
-Can you spot the issue? There's actually 2. The first issue is efficiency. We currently take our bounds, and starting with the roots, we divide our entire octree again. This is pretty stupid. Let's add a bit of functionality to make this more efficient. We only want to divide the OctreeNodes that are in contact with our object. To do this, we simply create a function that looks for the smallest node that completely encompasses the object. 
+Can you spot the issue? There's actually 2. The first issue is efficiency. We currently take our bounds, and starting with the roots, we divide our entire octree again. This is can be optimized. Let's add a bit of functionality to make this more efficient. We only want to divide the OctreeNodes that are in contact with our object. To do this, we simply create a function that looks for the smallest node that completely encompasses the object. 
 ````c#
 private OctreeNode GetSmallestContainingNode(OctreeObject obj)
 {
@@ -171,7 +168,7 @@ private OctreeNode GetSmallestContainingNode(OctreeObject obj)
 }
 ````
 
-What we currently do is the following. We take our root, and we get all of it's children. We now check if any of the children fully encompasses the object. If we find one, we use it for our next loop and do the same. We continue this process until we can't find any children that can completely encompass the object. We now know that there will only be changes inside that last node we found. We can use this in our original function like this.
+The code does the following: we take our root, and we get all of it's children. We now check if any of the children fully encompasses the object. If we find one, we use it for our next loop and do the same. We continue this process until we can't find any children that can completely encompass the object. We now know that there will only be changes inside that last node we found. We can use this in our original function like this.
 ````c#
 public void AddObject(OctreeObject obj)
 {
@@ -278,6 +275,11 @@ while(!(Root.bounds.Contains(bounds.min) && Root.bounds.Contains(bounds.max)))
 ````
 
 We do the expending process for as long as our current octree does not contain the entire object. We now have officially completely implemented adding objects. Congrats!
+Here's what it looks like.
+
+https://github.com/user-attachments/assets/e4c4ca7d-1ab0-4dcf-ba34-8650d2b198ef
+
+
 
 # Removing objects
 The last part I implemented as part of the dynamic octree is removing objects. This unfortunately comes a couple extra things to think about it.
