@@ -463,7 +463,7 @@ Thank for reading all the way through :)! (also if you decide to do loose octree
 Image 1:
 https://simplealgo.org/ 
 
-Image2: 
+Image 2: 
 https://www.mdpi.com/2076-3417/10/21/7636
 
 Image 3:
